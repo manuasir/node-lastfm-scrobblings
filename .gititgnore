@@ -1,7 +1,7 @@
 .idea
 .vscode
-node_modules/
+node_modules
 screenshots/
 nodesource
-dist/
+dist
 lib/package.json
