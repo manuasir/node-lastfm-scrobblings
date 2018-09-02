@@ -4,7 +4,6 @@
 
 Backup your LastFM scrobblings and store them in a ready to be Splunked JSON format file.
 
-
 ### Using the script:
 
 - No previous configuration needed, just clone this repo and use the binary file in any Linux distribution. 
