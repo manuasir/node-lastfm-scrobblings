@@ -1,0 +1,5 @@
+node_modules/
+screenshots/
+nodesource
+dist/
+lib/package.json
