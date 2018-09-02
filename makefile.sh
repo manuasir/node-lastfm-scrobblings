@@ -1,5 +1,5 @@
 #!/bin/bash
-command -v pkg >/dev/null 2>&1 || { echo >&2 "I require pkg but it's not installed.  Aborting."
+command -v pkg >/dev/null 2>&1 ||  echo >&2 "I require pkg but it's not installed.  Aborting."
 command -v npm >/dev/null 2>&1 ||  echo >&2 "I require npm but it's not installed.  Aborting."
 echo "Removing old binary file"
 rm -f bin/index-linux
