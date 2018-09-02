@@ -8,11 +8,15 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _process = require('./lib/process');
 
-// import { Proc } from './lib/process'
-var Proc = require('./lib/process');
-// import * as fs from 'fs'
+var _fs = require('fs');
+
+var fs = _interopRequireWildcard(_fs);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Checks the arguments
@@ -78,7 +82,7 @@ var checkArgs = function () {
             return _context.finish(13);
 
           case 21:
-            if (!(!key || !user || !grade)) {
+            if (!(!key || !user)) {
               _context.next = 25;
               break;
             }
@@ -86,7 +90,7 @@ var checkArgs = function () {
             throw Error('Missing arguments');
 
           case 25:
-            return _context.abrupt('return', { key: key, user: user, grade: grade });
+            return _context.abrupt('return', { key: key, user: user, grade: grade || 1 });
 
           case 26:
             _context.next = 31;
@@ -111,11 +115,21 @@ var checkArgs = function () {
 }();
 
 /**
+ * Flattens any array
+ * @param {Array} arr1 
+ */
+var flattenDeep = function flattenDeep(arr1) {
+  return arr1.reduce(function (acc, val) {
+    return Array.isArray(val) ? acc.concat(flattenDeep(val)) : acc.concat(val);
+  }, []);
+};
+
+/**
  * Starts the process
  */
 var start = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-    var _ref3, key, user, grade, processing, data;
+    var _ref3, key, user, grade, processing, firstReq, results, endReq, firstWrite, endWrite;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -130,26 +144,36 @@ var start = function () {
             key = _ref3.key;
             user = _ref3.user;
             grade = _ref3.grade;
-            processing = new Proc(key, user, grade);
-            _context2.next = 10;
+            processing = new _process.Proc(key, user, grade);
+            firstReq = new Date().getTime();
+            _context2.next = 11;
             return processing.process();
 
-          case 10:
-            data = _context2.sent;
-            _context2.next = 16;
+          case 11:
+            results = _context2.sent;
+            endReq = new Date().getTime();
+
+            console.log('Requests process time:', (endReq - firstReq) / 1000);
+            firstWrite = new Date().getTime();
+
+            fs.writeFileSync('scrobs.json', JSON.stringify(flattenDeep(results)), 'utf8');
+            endWrite = new Date().getTime();
+
+            console.log('Write process time:', (endWrite - firstWrite) / 1000);
+            _context2.next = 23;
             break;
 
-          case 13:
-            _context2.prev = 13;
+          case 20:
+            _context2.prev = 20;
             _context2.t0 = _context2['catch'](0);
             return _context2.abrupt('return', Promise.reject(_context2.t0));
 
-          case 16:
+          case 23:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[0, 13]]);
+    }, _callee2, undefined, [[0, 20]]);
   }));
 
   return function start() {
@@ -158,9 +182,10 @@ var start = function () {
 }();
 
 var first = new Date().getTime();
+console.log('Processing, please wait...');
 start().then(function () {
   var end = new Date().getTime();
-  console.log((end - first) / 1000);
+  console.log('Total process time:', (end - first) / 1000);
 }).catch(function (err) {
   console.error('error processing: ', err);
 });

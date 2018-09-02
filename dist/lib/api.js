@@ -21,17 +21,19 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _http = require('http');
 
-// import * as http from 'http'
-var http = require('http');
+var http = _interopRequireWildcard(_http);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Handles last-fm api interaction
  * @param {String} user 
  * @param {String} apiKey 
  */
-
 var Api = exports.Api = function () {
 
   /**
@@ -61,7 +63,6 @@ var Api = exports.Api = function () {
               case 0:
                 _context.prev = 0;
                 return _context.abrupt('return', new Promise(function (resolve, reject) {
-                  var first = new Date().getTime();
                   var request = http.get(endpoint, function (response) {
                     if (response.statusCode > 200) reject(new Error('Failed to load page, status code: ' + response.statusCode));
                     var body = [];
@@ -71,9 +72,7 @@ var Api = exports.Api = function () {
                     });
                     // we are done, resolve promise with those joined chunks
                     response.on('end', function () {
-                      var end = new Date().getTime();
-                      console.log((end - first) / 1000);
-                      resolve(JSON.parse(body.join('')));
+                      return resolve(JSON.parse(body.join('')));
                     });
                   });
                   request.on('error', function (err) {

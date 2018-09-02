@@ -26,7 +26,7 @@ Follow these steps if you want to build your own package:
     ```
     npm install -g babel-cli
     ```
-- And then install the rest of the dev-dependencies:
+- Then install the rest of the dev-dependencies:
     ```
     npm install
     ```

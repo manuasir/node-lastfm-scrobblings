@@ -25,10 +25,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _api = require('./api');
 
-// import { Api } from './api';
-var Api = require('./api');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Handles processing
@@ -37,20 +36,15 @@ var Api = require('./api');
 * @param {Number} levelConcurrency The pages to be requested concurrently. Example: 10 total results and 2 level of concurrency -> 10/2 : 5 pages will be requested concurrently. If
 * passed levelConcurrenty is greater than total number of results, then all requests will be done sequentially.
 */
-
 var Proc = exports.Proc = function () {
   /**
   * Constructor class
-  * @param {String} apiKey The LastFM API key
-  * @param {String} user The user to get data from
-  * @param {Number} levelConcurrency The pages to be requested concurrently. Example: 10 total results and 2 level of concurrency -> 10/2 : 5 pages will be requested concurrently. If
-  * passed levelConcurrenty is greater than total number of results, then all requests will be done sequentially.
   */
   function Proc(apiKey, user, levelConcurrency) {
     (0, _classCallCheck3.default)(this, Proc);
 
     this.levelConcurrency = levelConcurrency;
-    this.api = new Api(user, apiKey);
+    this.api = new _api.Api(user, apiKey);
   }
 
   /**
@@ -105,7 +99,7 @@ var Proc = exports.Proc = function () {
     key: 'process',
     value: function () {
       var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-        var results, totalPages, levelConcurrency, chunk, requests, count, _arr, _i, i, data;
+        var results, totalPages, levelConcurrency, chunk, requests, count, _arr, _i, i, _results, data;
 
         return _regenerator2.default.wrap(function _callee2$(_context2) {
           while (1) {
@@ -113,75 +107,79 @@ var Proc = exports.Proc = function () {
               case 0:
                 _context2.prev = 0;
                 results = [];
-                _context2.next = 4;
+                _context2.t0 = Number;
+                _context2.next = 5;
                 return this.getTotalPages();
 
-              case 4:
-                totalPages = _context2.sent;
-                levelConcurrency = this.levelConcurrency || totalPages;
-                chunk = levelConcurrency >= totalPages ? totalPages : Math.floor(totalPages / levelConcurrency);
+              case 5:
+                _context2.t1 = _context2.sent;
+                totalPages = (0, _context2.t0)(_context2.t1);
+                levelConcurrency = Number(this.levelConcurrency) || totalPages;
+                chunk = levelConcurrency >= totalPages ? 1 : Math.floor(totalPages / levelConcurrency);
                 requests = [];
                 count = 0;
-                // for (let i of [...Array(Number(totalPages)).keys()]) {
-                //   count++
-                //   if (count < chunk) {
-                //     requests.push(this.api.apiReq({ page: i }))
-                //   } else {
-                //     count = 0
-                //     const data = await Promise.all(requests)
-                //     requests = []
-                //     results.push(...data)
-                //   }
-                // }
-
-                // 5 parallel
-                // for (let i of [...Array(Number(5)).keys()]) {
-                //   // const data = await this.api.apiReq({ page: i })
-                //   requests.push(this.api.apiReq({ page: i }))
-                // }
-                // const data = await Promise.all(requests)
-                // results.push(...data)
-
-
-                // 5 sequential
-
-                _arr = [].concat((0, _toConsumableArray3.default)(Array(Number(5)).keys()));
+                _arr = [].concat((0, _toConsumableArray3.default)(Array(totalPages).keys()));
                 _i = 0;
 
-              case 11:
+              case 13:
                 if (!(_i < _arr.length)) {
-                  _context2.next = 20;
+                  _context2.next = 27;
                   break;
                 }
 
                 i = _arr[_i];
-                _context2.next = 15;
-                return this.api.apiReq({ page: i });
 
-              case 15:
+                count++;
+                if (count <= chunk) {
+                  requests.push(this.api.apiReq({ page: i }));
+                }
+
+                if (!(count === chunk)) {
+                  _context2.next = 24;
+                  break;
+                }
+
+                count = 0;
+                _context2.next = 21;
+                return Promise.all(requests);
+
+              case 21:
                 data = _context2.sent;
 
-                results.push(data);
+                requests = [];
+                (_results = results).push.apply(_results, (0, _toConsumableArray3.default)(data.map(function (page) {
+                  delete page.recenttracks['@attr'];
+                  page.recenttracks.track.map(function (tr) {
+                    if (tr.date) {
+                      if (tr.date['#text']) {
+                        tr.timestamp = tr.date['#text'];
+                        delete tr.date;
+                      }
+                    }
+                  });
+                  return page.recenttracks.track;
+                })));
 
-              case 17:
+              case 24:
                 _i++;
-                _context2.next = 11;
+                _context2.next = 13;
                 break;
 
-              case 20:
-                return _context2.abrupt('return', { results: results });
+              case 27:
+                results = results;
+                return _context2.abrupt('return', results);
 
-              case 23:
-                _context2.prev = 23;
-                _context2.t0 = _context2['catch'](0);
-                return _context2.abrupt('return', Promise.reject(_context2.t0.message || _context2.t0));
+              case 31:
+                _context2.prev = 31;
+                _context2.t2 = _context2['catch'](0);
+                return _context2.abrupt('return', Promise.reject(_context2.t2.message || _context2.t2));
 
-              case 26:
+              case 34:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 23]]);
+        }, _callee2, this, [[0, 31]]);
       }));
 
       function process() {

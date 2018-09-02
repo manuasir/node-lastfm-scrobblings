@@ -1,7 +1,7 @@
 {
-  "name": "lastfm-scrobbs",
+  "name": "node-lastfm-scrobblings",
   "version": "1.0.0",
-  "description": "Gets the user full scrobbs list and stores it in JSON format",
+  "description": "Get your full scrobblings list and stores it in JSON format",
   "main": "index.js",
   "scripts": {
     "test": "npm test",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/manuasir/lastfm-scrobbs.git"
+    "url": "git+https://github.com/manuasir/node-lastfm-scrobblings.git"
   },
   "keywords": [
     "lastfm"
@@ -27,10 +27,12 @@
   "author": "Manuel J. Bernal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/manuasir/lastfm-scrobbs/issues"
+    "url": "https://github.com/manuasir/node-lastfm-scrobblings/issues"
   },
-  "homepage": "https://github.com/manuasir/lastfm-scrobbs#readme",
+  "homepage": "https://github.com/manuasir/node-lastfm-scrobblings#readme",
   "dependencies": {
-    "babel-runtime": "^6.26.0"
+    "babel-runtime": "^6.26.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
   }
 }
