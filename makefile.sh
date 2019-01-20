@@ -1,8 +1,9 @@
 #!/bin/bash
 command -v pkg >/dev/null 2>&1 ||  echo >&2 "I require pkg but it's not installed.  Aborting."
 command -v npm >/dev/null 2>&1 ||  echo >&2 "I require npm but it's not installed.  Aborting."
-echo "Removing old binary file"
-rm -f bin/index-linux
+echo "Removing old binary files"
+echo `rm -f bin/index-linux`
+echo `rm -f bin/index-win.exe`
 echo "Copying package.json to lib/package.json"
 echo "Generating code to ECMAScript 5"
 echo `pwd`
