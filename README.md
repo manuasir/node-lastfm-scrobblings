@@ -2,11 +2,11 @@
 
 # node-lastfm-scrobblings
 
-Backup your LastFM scrobblings and store them in a ready to be Splunked JSON format file.
+Backup your LastFM scrobblings and store them in a friendly JSON format file.
 
 ### Using the script:
 
-- No previous configuration needed, just clone this repo and use the binary file in any Linux distribution. 
+- No previous configuration needed, just clone this repo and use the binary file on any Linux distribution. 
 - Execute the binary file with the following parameters:
     ```
     ./bin/index-linux key=<YOUR-API-KEY> user=<LASTFM-USER> start=<start-page> end=<end-page> grade=<concurrency-grade>
@@ -20,11 +20,11 @@ Backup your LastFM scrobblings and store them in a ready to be Splunked JSON for
 ### How to build:
 Follow these steps if you want to build your own package:
 
-- A Linux executable is generated with `pkg`, so it'd be needed to install it globally:
+- A Linux executable will be generated with `pkg`, so it'd be needed to install it globally:
     ```
     npm install -g pkg
     ```
-- Also `Babel` is used to transpile the code from last ES6 features to ES5:
+- Also `Babel` is used for transpiling the code from latest ES6 features to ES5:
     ```
     npm install -g babel-cli
     ```
@@ -32,7 +32,7 @@ Follow these steps if you want to build your own package:
     ```
     npm install
     ```
-- A bash script for the compilation is included:
+- Run the attached bash script for building the binaries:
     ```
     ./makefile
     ```
