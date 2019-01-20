@@ -9,11 +9,13 @@ Backup your LastFM scrobblings and store them in a ready to be Splunked JSON for
 - No previous configuration needed, just clone this repo and use the binary file in any Linux distribution. 
 - Execute the binary file with the following parameters:
     ```
-    ./bin/index-linux key=<YOUR-API-KEY> user=<LASTFM-USER>
+    ./bin/index-linux key=<YOUR-API-KEY> user=<LASTFM-USER> start=<start-page> end=<end-page> grade=<concurrency-grade>
     ```
-    - Optionally you can add the 'grade' parameter for setting the parallelization level.
-    A grade is the number of chunks that requests will be splitted and performed in parallel. Example: grade=1 launches all the requests in parallel (1 chunk with all data), grade=2 splits the dataset in half and performs two sequential rounds of requests.
-
+    - `key (Mandatory)`: The API KEY provided by LastFM.
+    - `user (Mandatory)`: The user to grab the data from.
+    - `start (Optional`: The API page to start. By default, the first page.
+    - `end (Optional`: The API page to end pagination. By default, the last page.
+    - `grade (Optional)`: The 'grade' parameter for setting the concurrency level. A grade is the number of chunks that requests will be splitted and performed in parallel. Example: grade=1 launches all the requests in parallel (1 chunk with all data), grade=2 splits the dataset in half and performs two sequential rounds of requests.
 
 ### How to build:
 Follow these steps if you want to build your own package:
