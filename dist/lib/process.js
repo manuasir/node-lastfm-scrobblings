@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Proc = undefined;
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
@@ -31,15 +35,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * Handles processing
-* @param {String} apiKey The LastFM API key
-* @param {String} user The user to get data from
-* @param {Number} levelConcurrency The pages to be requested concurrently. Example: 10 total results and 2 level of concurrency -> 10/2 : 5 pages will be requested concurrently. If
-* passed levelConcurrenty is greater than total number of results, then all requests will be done sequentially.
-*/
+ * @param {String} apiKey The LastFM API key
+ * @param {String} user The user to get data from
+ * @param {Number} levelConcurrency The pages to be requested concurrently. Example: 10 total results and 2 level of concurrency -> 10/2 : 5 pages will be requested concurrently. If
+ * passed levelConcurrenty is greater than total number of results, then all requests will be done sequentially.
+ */
 var Proc = exports.Proc = function () {
   /**
-  * Constructor class
-  */
+   * Constructor class
+   */
   function Proc(apiKey, user, levelConcurrency) {
     (0, _classCallCheck3.default)(this, Proc);
 
@@ -99,7 +103,10 @@ var Proc = exports.Proc = function () {
     key: 'process',
     value: function () {
       var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-        var results, totalPages, levelConcurrency, chunk, requests, count, _arr, _i, i, _results, data;
+        var start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var end = arguments[1];
+
+        var results, totalPages, levelConcurrency, chunk, requests, count, _arr, _i, i, data;
 
         return _regenerator2.default.wrap(function _callee2$(_context2) {
           while (1) {
@@ -107,79 +114,99 @@ var Proc = exports.Proc = function () {
               case 0:
                 _context2.prev = 0;
                 results = [];
-                _context2.t0 = Number;
-                _context2.next = 5;
+                _context2.t0 = end;
+
+                if (_context2.t0) {
+                  _context2.next = 9;
+                  break;
+                }
+
+                _context2.t1 = Number;
+                _context2.next = 7;
                 return this.getTotalPages();
 
-              case 5:
-                _context2.t1 = _context2.sent;
-                totalPages = (0, _context2.t0)(_context2.t1);
+              case 7:
+                _context2.t2 = _context2.sent;
+                _context2.t0 = (0, _context2.t1)(_context2.t2);
+
+              case 9:
+                totalPages = _context2.t0;
                 levelConcurrency = Number(this.levelConcurrency) || totalPages;
-                chunk = levelConcurrency >= totalPages ? 1 : Math.floor(totalPages / levelConcurrency);
+                chunk = levelConcurrency >= totalPages - start ? 1 : (totalPages - start) % levelConcurrency !== 0 ? Math.floor((totalPages - start) / levelConcurrency) - 1 : (totalPages - start) / levelConcurrency;
                 requests = [];
                 count = 0;
-                _arr = [].concat((0, _toConsumableArray3.default)(Array(totalPages).keys()));
+                _arr = [].concat((0, _toConsumableArray3.default)(Array.from({ length: totalPages - start }, function (value, key) {
+                  return key + start;
+                })));
                 _i = 0;
 
-              case 13:
+              case 16:
                 if (!(_i < _arr.length)) {
-                  _context2.next = 27;
+                  _context2.next = 31;
                   break;
                 }
 
                 i = _arr[_i];
 
                 count++;
-                if (count <= chunk) {
+                if (count < chunk) {
                   requests.push(this.api.apiReq({ page: i }));
                 }
 
-                if (!(count === chunk)) {
-                  _context2.next = 24;
+                if (!(count >= chunk)) {
+                  _context2.next = 28;
                   break;
                 }
 
                 count = 0;
-                _context2.next = 21;
+                requests.push(this.api.apiReq({ page: i }));
+                _context2.next = 25;
                 return Promise.all(requests);
 
-              case 21:
+              case 25:
                 data = _context2.sent;
 
                 requests = [];
-                (_results = results).push.apply(_results, (0, _toConsumableArray3.default)(data.map(function (page) {
-                  delete page.recenttracks['@attr'];
-                  page.recenttracks.track.map(function (tr) {
-                    if (tr.date) {
-                      if (tr.date['#text']) {
-                        tr.timestamp = tr.date['#text'];
-                        delete tr.date;
+                results.push.apply(results, (0, _toConsumableArray3.default)(data.map(function (page) {
+                  if (page && page.recenttracks && (0, _typeof3.default)(page.recenttracks) === 'object' && page.recenttracks['@attr']) {
+                    delete page.recenttracks['@attr'];
+                    if (Array.isArray(page.recenttracks.track)) {
+                      if (page.recenttracks.track[0]['@attr']) {
+                        page.recenttracks.track.shift();
                       }
+                      page.recenttracks.track.map(function (tr) {
+                        if (tr.date) {
+                          if (tr.date['#text']) {
+                            tr.timestamp = tr.date['#text'];
+                            delete tr.date;
+                          }
+                        }
+                      });
+
+                      return page.recenttracks.track;
                     }
-                  });
-                  return page.recenttracks.track;
+                  }
                 })));
 
-              case 24:
+              case 28:
                 _i++;
-                _context2.next = 13;
+                _context2.next = 16;
                 break;
 
-              case 27:
-                results = results;
+              case 31:
                 return _context2.abrupt('return', results);
 
-              case 31:
-                _context2.prev = 31;
-                _context2.t2 = _context2['catch'](0);
-                return _context2.abrupt('return', Promise.reject(_context2.t2.message || _context2.t2));
-
               case 34:
+                _context2.prev = 34;
+                _context2.t3 = _context2['catch'](0);
+                return _context2.abrupt('return', Promise.reject(_context2.t3.message || _context2.t3));
+
+              case 37:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 31]]);
+        }, _callee2, this, [[0, 34]]);
       }));
 
       function process() {

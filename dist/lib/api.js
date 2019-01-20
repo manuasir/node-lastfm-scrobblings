@@ -31,11 +31,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  * Handles last-fm api interaction
- * @param {String} user 
- * @param {String} apiKey 
+ * @param {String} user
+ * @param {String} apiKey
  */
 var Api = exports.Api = function () {
-
   /**
    * Constructor class
    */
@@ -48,8 +47,8 @@ var Api = exports.Api = function () {
 
   /**
    * Promised HTTP GET request
-   * @param {String} endpoint 
-   * @returns {Promise} 
+   * @param {String} endpoint
+   * @returns {Promise}
    */
 
 
@@ -64,7 +63,9 @@ var Api = exports.Api = function () {
                 _context.prev = 0;
                 return _context.abrupt('return', new Promise(function (resolve, reject) {
                   var request = http.get(endpoint, function (response) {
-                    if (response.statusCode > 200) reject(new Error('Failed to load page, status code: ' + response.statusCode));
+                    if (response.statusCode > 200) {
+                      reject(new Error('Failed to load page, status code: ' + response.statusCode));
+                    }
                     var body = [];
                     // on every content chunk, push it to the data array
                     response.on('data', function (chunk) {
@@ -83,7 +84,7 @@ var Api = exports.Api = function () {
               case 4:
                 _context.prev = 4;
                 _context.t0 = _context['catch'](0);
-                return _context.abrupt('return', Promise.reject(new Error('Unknown error')));
+                return _context.abrupt('return', Promise.reject(new Error('Error sending GET request: ', _context.t0.message || _context.t0)));
 
               case 7:
               case 'end':
@@ -118,7 +119,7 @@ var Api = exports.Api = function () {
                 _context2.prev = 0;
                 page = params && params.page ? params.page : 1;
 
-                if (!(!this.apiKey || this.apiKey === '' || !this.user || this.user == '')) {
+                if (!(!this.apiKey || this.apiKey === '' || !this.user || this.user === '')) {
                   _context2.next = 4;
                   break;
                 }

@@ -24,14 +24,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var checkArgs = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
-    var key, user, grade, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, arg;
+    var key, user, grade, _start, end, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, arg;
 
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            key = void 0, user = void 0, grade = void 0;
+            key = void 0, user = void 0, grade = void 0, _start = void 0, end = void 0;
             _iteratorNormalCompletion = true;
             _didIteratorError = false;
             _iteratorError = undefined;
@@ -46,6 +46,10 @@ var checkArgs = function () {
                 user = arg.split('=')[1];
               } else if (arg.includes('grade=')) {
                 grade = arg.split('=')[1];
+              } else if (arg.includes('start=')) {
+                _start = Number(arg.split('=')[1]);
+              } else if (arg.includes('end=')) {
+                end = Number(arg.split('=')[1]);
               }
             }
             _context.next = 13;
@@ -90,7 +94,13 @@ var checkArgs = function () {
             throw Error('Missing arguments');
 
           case 25:
-            return _context.abrupt('return', { key: key, user: user, grade: grade || 1 });
+            return _context.abrupt('return', {
+              key: key,
+              user: user,
+              grade: grade || 1,
+              start: _start || 0,
+              end: end || null
+            });
 
           case 26:
             _context.next = 31;
@@ -116,7 +126,7 @@ var checkArgs = function () {
 
 /**
  * Flattens any array
- * @param {Array} arr1 
+ * @param {Array} arr1
  */
 var flattenDeep = function flattenDeep(arr1) {
   return arr1.reduce(function (acc, val) {
@@ -129,7 +139,7 @@ var flattenDeep = function flattenDeep(arr1) {
  */
 var start = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-    var _ref3, key, user, grade, processing, firstReq, results, endReq, firstWrite, endWrite;
+    var _ref3, key, user, grade, _start2, end, processing, firstReq, results, endReq, firstWrite, endWrite;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -144,12 +154,14 @@ var start = function () {
             key = _ref3.key;
             user = _ref3.user;
             grade = _ref3.grade;
+            _start2 = _ref3.start;
+            end = _ref3.end;
             processing = new _process.Proc(key, user, grade);
             firstReq = new Date().getTime();
-            _context2.next = 11;
-            return processing.process();
+            _context2.next = 13;
+            return processing.process(_start2, end);
 
-          case 11:
+          case 13:
             results = _context2.sent;
             endReq = new Date().getTime();
 
@@ -160,20 +172,20 @@ var start = function () {
             endWrite = new Date().getTime();
 
             console.log('Write process time:', (endWrite - firstWrite) / 1000);
-            _context2.next = 23;
+            _context2.next = 25;
             break;
 
-          case 20:
-            _context2.prev = 20;
+          case 22:
+            _context2.prev = 22;
             _context2.t0 = _context2['catch'](0);
             return _context2.abrupt('return', Promise.reject(_context2.t0));
 
-          case 23:
+          case 25:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[0, 20]]);
+    }, _callee2, undefined, [[0, 22]]);
   }));
 
   return function start() {
@@ -187,5 +199,5 @@ start().then(function () {
   var end = new Date().getTime();
   console.log('Total process time:', (end - first) / 1000);
 }).catch(function (err) {
-  console.error('error processing: ', err);
+  console.error('Error while processing: ', err.message || err);
 });
